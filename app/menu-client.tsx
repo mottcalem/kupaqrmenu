@@ -45,6 +45,11 @@ export function MenuClient() {
         </div> : <div className="rounded-[24px] border border-dashed border-[#b7ccc4] bg-white p-9 text-center"><span className="text-4xl" aria-hidden>♣</span><h3 className="mt-3 font-serif text-xl font-semibold">Eşleşen ürün yok</h3><p className="mt-1 text-sm text-muted-foreground">Başka bir ürün veya kategori deneyebilirsin.</p><button onClick={() => { setActive('all'); setQuery(''); }} className="mt-4 rounded-full bg-[#153a31] px-4 py-2 text-sm font-bold text-white">Tüm menüyü göster</button></div>}
         <div className="mt-8 flex items-center gap-3 rounded-2xl border border-[#dce7e2] bg-[#f0f7f4] px-4 py-4 text-sm text-[#39554d]"><span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-[#159875]"><MapPin size={17} /></span><div><strong className="block text-[#17322b]">Kupa Game Cafe</strong><span>Siparişini garsonumuza iletebilirsin. Afiyet olsun!</span></div></div>
         <p className="mt-5 text-center text-xs font-semibold tracking-wide text-[#73867f]">Fiyatlara KDV dahildir.</p>
+        <p className="mt-3 text-center text-xs text-[#8a9a95]">
+          <a href="https://dijitalpanter.com" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-[#159875] hover:underline">
+            Dijitalpanter tarafından geliştirilmiştir.
+          </a>
+        </p>
       </section>
     </main>
   );

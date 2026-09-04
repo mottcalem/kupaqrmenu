@@ -1,0 +1,9 @@
+'use client';
+import { useState } from 'react';
+import { LockKeyhole } from 'lucide-react';
+
+export function LoginForm() {
+  const [password,setPassword]=useState(''); const [error,setError]=useState(''); const [loading,setLoading]=useState(false);
+  async function submit(event: React.FormEvent) { event.preventDefault(); setLoading(true); setError(''); const response=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})}); const data=await response.json(); if(response.ok) location.href='/admin'; else {setError(data.error);setLoading(false);} }
+  return <main className="admin-shell grid min-h-screen place-items-center p-5"><form onSubmit={submit} className="w-full max-w-sm rounded-[28px] border border-white/10 bg-[#153a31] p-7 text-white shadow-2xl"><div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#77e8bf] text-[#153a31]"><LockKeyhole /></div><p className="mt-6 text-xs font-bold uppercase tracking-[.2em] text-[#77e8bf]">Kupa Yönetim</p><h1 className="mt-2 font-serif text-3xl font-semibold">Tekrar hoş geldin.</h1><p className="mt-2 text-sm text-white/60">Menü içeriğini yönetmek için parolanı gir.</p><label className="mt-7 block text-xs font-bold text-white/75">Yönetici parolası<input autoFocus type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 outline-none focus:border-[#77e8bf]" /></label>{error&&<p className="mt-3 text-sm text-red-300">{error}</p>}<button disabled={loading} className="mt-5 w-full rounded-xl bg-[#77e8bf] px-4 py-3 font-bold text-[#153a31] disabled:opacity-60">{loading?'Giriş yapılıyor…':'Yönetim paneline gir'}</button><a href="/" className="mt-5 block text-center text-xs text-white/50 hover:text-white">← Menüye dön</a></form></main>;
+}

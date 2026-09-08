@@ -1,21 +1,36 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MapPin, Search, Sparkles, X } from 'lucide-react';
-import type { PublicMenuItem, SiteSettings } from '@/lib/menu-repository';
+import type { PopupSettings, PublicMenuItem, SiteSettings } from '@/lib/menu-repository';
 
 const money = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 });
 type Category = { id: string; name: string; icon: string };
 
-export function MenuClient({ categories, items, settings }: { categories: Category[]; items: PublicMenuItem[]; settings: SiteSettings }) {
+export function MenuClient({ categories, items, settings, popup }: { categories: Category[]; items: PublicMenuItem[]; settings: SiteSettings; popup: PopupSettings }) {
   const [active, setActive] = useState('all');
   const [search, setSearch] = useState('');
+  const [popupOpen, setPopupOpen] = useState(false);
+  useEffect(() => {
+    if (!popup.enabled) return;
+    const timer = window.setTimeout(() => setPopupOpen(true), popup.delaySeconds * 1000);
+    return () => window.clearTimeout(timer);
+  }, [popup.enabled, popup.delaySeconds]);
+  useEffect(() => {
+    if (!popupOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const closeWithEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setPopupOpen(false); };
+    window.addEventListener('keydown', closeWithEscape);
+    return () => { document.body.style.overflow = previous; window.removeEventListener('keydown', closeWithEscape); };
+  }, [popupOpen]);
   const results = useMemo(() => {
     const query = search.trim().toLocaleLowerCase('tr-TR');
     return items.filter((item) => (active === 'all' || item.categoryId === active) && (!query || `${item.name} ${item.description ?? ''} ${item.categoryName}`.toLocaleLowerCase('tr-TR').includes(query)));
   }, [active, search, items]);
 
   return <main className="min-h-screen bg-background pb-20 text-foreground">
+    {popupOpen && <div className="popup-backdrop fixed inset-0 z-50 grid place-items-center bg-[#071713]/75 p-4 backdrop-blur-sm" onMouseDown={(event) => { if (event.currentTarget === event.target) setPopupOpen(false); }}><section role="dialog" aria-modal="true" aria-label={popup.title || 'Duyuru'} className="popup-card relative max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-[26px] bg-white p-2 shadow-2xl"><button onClick={() => setPopupOpen(false)} className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full border border-white/60 bg-[#102a25]/85 text-white shadow-lg backdrop-blur" aria-label="Reklamı kapat"><X size={20}/></button>{popup.imageUrl && <img src={popup.imageUrl} alt={popup.title || 'Kupa Game Cafe duyurusu'} className="max-h-[65vh] w-full rounded-[20px] object-contain"/>}{(popup.title || popup.body || (popup.ctaLabel && popup.ctaUrl)) && <div className="px-4 pb-4 pt-5 text-center">{popup.title && <h2 className="font-serif text-2xl font-semibold text-[#17322b]">{popup.title}</h2>}{popup.body && <p className="mx-auto mt-2 max-w-md whitespace-pre-line text-sm leading-6 text-[#647a73]">{popup.body}</p>}{popup.ctaLabel && popup.ctaUrl && <a href={popup.ctaUrl} target="_blank" rel="noopener noreferrer" className="admin-primary mt-4">{popup.ctaLabel}</a>}</div>}</section></div>}
     <section className="hero relative overflow-hidden px-5 pb-7 pt-6 text-white"><div className="absolute inset-0 bg-[linear-gradient(110deg,#0d2823_10%,#0d2823e8_58%,#0d2823a8)]" /><div className="absolute -right-16 -top-24 h-64 w-64 rounded-full border-[42px] border-[#38d29f]/10" /><div className="relative mx-auto max-w-4xl">
       <div className="mb-9 flex items-center"><div className="flex items-center gap-3"><div className="grid h-12 w-12 place-items-center rounded-2xl border border-white/15 bg-white/10 font-serif text-xl font-black backdrop-blur">{settings.brandName.charAt(0)}</div><div><p className="font-serif text-xl font-bold tracking-wide">{settings.brandName}</p><p className="text-[10px] uppercase tracking-[.28em] text-[#77e8bf]">{settings.brandSubtitle}</p></div></div></div>
       <p className="mb-2 text-xs font-semibold uppercase tracking-[.22em] text-[#77e8bf]">{settings.eyebrow}</p><h1 className="max-w-md font-serif text-4xl font-semibold leading-[1.08] sm:text-5xl">{settings.headline}</h1><p className="mt-3 max-w-md text-sm leading-6 text-white/65">{settings.description}</p>

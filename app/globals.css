@@ -89,6 +89,11 @@ body {
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
+@keyframes popup-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popup-card-in { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.popup-backdrop { animation: popup-backdrop-in 180ms ease-out both; }
+.popup-card { animation: popup-card-in 260ms cubic-bezier(.2,.8,.2,1) both; }
+
 .admin-shell { background: #f4f8f6; }
 .admin-kicker { margin-bottom: .3rem; color: #159875; font-size: .68rem; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
 .admin-nav { display: flex; width: 100%; align-items: center; gap: .65rem; border-radius: .75rem; padding: .75rem; color: #60766f; font-size: .875rem; font-weight: 650; transition: 150ms ease; }

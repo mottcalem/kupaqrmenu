@@ -47,6 +47,21 @@ await pool.query(`CREATE TABLE IF NOT EXISTS site_settings (
 
 await pool.query(`INSERT INTO site_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`);
 
+await pool.query(`CREATE TABLE IF NOT EXISTS ad_popup (
+  id integer PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+  enabled boolean NOT NULL DEFAULT false,
+  delay_seconds integer NOT NULL DEFAULT 5 CHECK (delay_seconds BETWEEN 0 AND 300),
+  title text NOT NULL DEFAULT '',
+  body text NOT NULL DEFAULT '',
+  cta_label text NOT NULL DEFAULT '',
+  cta_url text NOT NULL DEFAULT '',
+  image_data bytea,
+  image_type text,
+  updated_at timestamptz NOT NULL DEFAULT now()
+)`);
+
+await pool.query(`INSERT INTO ad_popup (id) VALUES (1) ON CONFLICT (id) DO NOTHING`);
+
 for (const [categoryIndex, category] of menuCategories.entries()) {
   await pool.query(`INSERT INTO categories (id, name, icon, sort_order) VALUES ($1,$2,$3,$4)
     ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, icon=EXCLUDED.icon, sort_order=EXCLUDED.sort_order`,

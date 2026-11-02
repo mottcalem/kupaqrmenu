@@ -12,6 +12,7 @@
     "sites:dev": "vinext dev",
     "sites:build": "vinext build",
     "db:setup": "tsx scripts/setup-db.ts",
+    "db:migrate": "tsx scripts/migrate-db.ts",
     "lint": "oxlint",
     "format": "oxfmt"
   },
